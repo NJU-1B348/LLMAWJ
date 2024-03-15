@@ -10,38 +10,6 @@ client = OpenAI(
 
 PROMPT:list[str] = prompt.Prompt.gpt
 
-CASE = """
-{
-    "DefectType": "Never Free",
-    "Location": {
-        "ln": 27,
-        "cl": 5,
-        "fl": "malloc9.c"
-    },
-    "Function": "main",
-    "Description": {},
-    "Events": [],
-    "Var": [
-        "rr_node[i].edges"
-    ],
-    "CodeNear": [
-        "	return MACROMALLOC(10);",
-        "}",
-        "",
-        "int main(){",
-        "	//rr_node = malloc(sizeof(struct s_rr_node)*10);",
-        "	int i;",
-        "	rr_node[i].edges = alloc();",
-        "",
-        "	//free(rr_node[i].edges);",
-        "",
-        "}"
-    ],
-    "SuccessTransform": "True",
-    "TransformMessage": ""
-}
-"""
-
 def log(success:bool, msg:str, error:str="warning") -> None:
     if success:
         print("\033[32m[LLMAWJ]\033[0m " + msg)
