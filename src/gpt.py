@@ -10,7 +10,7 @@ client = OpenAI(
 
 PROMPT:list[str] = prompt.Prompt.gpt
 
-def log(success:bool, msg:str, error:str="warning") -> None:
+def log(success: bool, msg: str, error: str = "warning") -> None:
     if success:
         print("\033[32m[LLMAWJ]\033[0m " + msg)
     else:
@@ -34,12 +34,18 @@ if __name__ == "__main__":
     parser.add_argument('--single', type=bool,
                         default=False,
                         help='Set to True if you want to process a single case.')
-    parser.add_argument('--disable-exp', type=str,
+    parser.add_argument('--disable-exp', type=bool,
                         default=False,
                         help='Set to True if you want to disable the explanation part in the result, which may save some time to execute and save some cost due to less token.')
-    parser.add_argument('--disable-other', type=str,
+    parser.add_argument('--disable-other', type=bool,
                         default=False,
-                        help='Set to True if you want to disable the \'other\' part in the result, which may save some time to execute and save some cost due to less token. See the document for the meaning of \'other\'.')
+                        help='Set to True if you want to disable the \'other\' part in the result, which may save some time to execute and save some cost due to less token. See the documentation for the meaning of \'other\'.')
+    parser.add_argument('--dump-hrr', type=bool,
+                        default=False,
+                        help='Set to True if you want to dump a human readable report with markdown format.')
+    parser.add_argument('--hrr-file', type=str,
+                        default='report.md',
+                        help='Set the file directory of the human readable report.')
     # parse the args
     args = parser.parse_args()
     
@@ -79,6 +85,7 @@ if __name__ == "__main__":
                 {"role": "user", "content": str(case) }
             ],
             stream=True,
+            
         )
 
         ans_str = ""
@@ -105,8 +112,32 @@ if __name__ == "__main__":
     f.close()
     log(True, f"Output json has been written to {args.out_file}")
     
-    pairs = zip(cases, ans)
+    if args.dump_hrr:
     
-    # TODO: Sort the cases by the chance of being true 
-    
-    
+        pairs:list[tuple[dict, dict]] = list(zip(cases, ans))
+        
+        pairs.sort(key=lambda x: x[1]['Chance'])
+        
+        try:
+            f = open(args.hrr_path, 'w')
+        except FileNotFoundError:
+            log(False, f"Report file report.md not found. Cancel report generation.", "warning")
+            exit(0)
+        
+        f.write("# LLMAWJ Report  \n")
+        
+        f.write("All cases are sorted in the increasing order of the chance of being true warning.  \n")
+        
+        cnt = 0
+        
+        for case, ans in pairs:
+            cnt += 1
+            f.write(f"## Case {cnt}  \n")
+            f.write(f"**Chance**: {ans['Chance']}  \n")
+            if not args.disable_exp:
+                f.write(f"**Explanation**:  {ans['Explanation']}  \n")
+            if not args.disable_other:
+                f.write(f"**Other Information Suggestted**:  {ans['Other']}  \n")
+            f.write(f"**Content**:  \n```json\n{case}\n```  \n")
+        
+        log(True, f"Human readable report has been written to { args.hrr_file }")
