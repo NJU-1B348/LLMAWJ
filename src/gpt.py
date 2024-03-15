@@ -94,7 +94,7 @@ if __name__ == "__main__":
             if chunk.choices[0].delta.content is not None:
                 ans_str += chunk.choices[0].delta.content
         
-        print(ans_str)
+        # print(ans_str)
         
         ans.append(json.loads(ans_str))
         
