@@ -2,3 +2,6 @@
 .DS_Store
 .conda/
 .idea/
+__pycache__/
+in.json
+out.json

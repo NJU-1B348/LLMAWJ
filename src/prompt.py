@@ -39,10 +39,36 @@ class Prompt:
         """Then, I need you to understand that your output should be in json format, and the format is provided below:
         {
             "Judge": "False",  // this warning is true or false
-            "Chance that the warning is true": 0.20, // the chance that this warning is true. For example, if you are sure this warning is true, then 1.00, if you are sure this warning is false, then 0.00.
+            "Chance": 0.20, // the chance that this warning is true. For example, if you are sure this warning is true, then 1.00, if you are sure this warning is false, then 0.00.
             "Explanation": "This warning is false because...", // the explanation of why this warning is true or false
             "Other": "" // other information, if you need more information or you cannot deal with it, please mention it here.
         }
 
         If you understand all of what I said, please wait for the cases I will give you."""
     ]
+    
+    format_without_exp =  """Then, I need you to understand that your output should be in json format, and the format is provided below:
+        {
+            "Judge": "False",  // this warning is true or false
+            "Chance": 0.20, // the chance that this warning is true. For example, if you are sure this warning is true, then 1.00, if you are sure this warning is false, then 0.00.
+            "Other": "" // other information, if you need more information or you cannot deal with it, please mention it here.
+        }
+
+        If you understand all of what I said, please wait for the cases I will give you."""
+    
+    format_without_other = """Then, I need you to understand that your output should be in json format, and the format is provided below:
+        {
+            "Judge": "False",  // this warning is true or false
+            "Chance": 0.20, // the chance that this warning is true. For example, if you are sure this warning is true, then 1.00, if you are sure this warning is false, then 0.00.
+            "Explanation": "This warning is false because..." // the explanation of why this warning is true or false
+        }
+
+        If you understand all of what I said, please wait for the cases I will give you."""
+        
+    format_without_all = """Then, I need you to understand that your output should be in json format, and the format is provided below:
+        {
+            "Judge": "False",  // this warning is true or false
+            "Chance": 0.20 // the chance that this warning is true. For example, if you are sure this warning is true, then 1.00, if you are sure this warning is false, then 0.00.
+        }
+
+        If you understand all of what I said, please wait for the cases I will give you."""

@@ -6,3 +6,19 @@
 
 **IR**是指我们规定的警报中间格式，包含了警报的位置、所在函数、附近代码、可疑变量、警报类型等信息。它可能从任一一种静态分析工具的输出中生成。在我们的项目中，我们提供了**SRT**(SVF Report Transformer)作为一个例子，用于自动化地将SVF工具的`saber`内存泄漏分析报告转化为IR。
 
+## 文件结构
+
+```text
+- llmawj/
+    - report/
+        - GPT3.5Prompt.md # 用于GPT3.5的Prompt设计 该Prompt是在还没有迁移至GPT API之前设计的，在将其迁移到GPT API之后，我们进行了略微的修改。
+        - prompt_evaluate.md # 在将Prompt迁移至GPT API之前，我们人工对Prompt进行的一次评估，之后我们将在GPT API上进行更多的评估。
+    - test/
+        - test_case.md  # 上述prompt_evaluate.md中提到的测试用例
+        - gpt_test.py   # 用于测试LLMAWJ的脚本
+    - src/
+        - gpt.py     # LLMAWJ的主要代码
+        - prompt.py  # Prompt的设计
+    - srt/          # 上文提到的SRT的子仓库
+    - res/          # 一些输入和输出文件
+```
