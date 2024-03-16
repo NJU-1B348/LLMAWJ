@@ -17,7 +17,7 @@
         - test_case.md  # 上述prompt_evaluate.md中提到的测试用例
         - gpt_test.py   # 用于测试LLMAWJ的脚本
     - src/
-        - gpt.py     # LLMAWJ的主要代码
+        - run.py     # LLMAWJ的主要代码
         - prompt.py  # Prompt的设计
     - srt/          # 上文提到的SRT的子仓库
     - res/          # 一些输入和输出文件

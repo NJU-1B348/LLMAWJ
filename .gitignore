@@ -2,7 +2,9 @@
 .DS_Store
 .conda/
 .idea/
+__pycache__
 __pycache__/
 in.json
 out.json
 report.md
+data/
