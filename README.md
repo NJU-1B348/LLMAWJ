@@ -10,15 +10,20 @@
 
 ```text
 - llmawj/
-    - report/
+    - report/  # 主要是一些已经完成的工作报告
         - GPT3.5Prompt.md # 用于GPT3.5的Prompt设计 该Prompt是在还没有迁移至GPT API之前设计的，在将其迁移到GPT API之后，我们进行了略微的修改。
         - prompt_evaluate.md # 在将Prompt迁移至GPT API之前，我们人工对Prompt进行的一次评估，之后我们将在GPT API上进行更多的评估。
-    - test/
-        - test_case.md  # 上述prompt_evaluate.md中提到的测试用例
-        - gpt_test.py   # 用于测试LLMAWJ的脚本
     - src/
+        - utils/     # 一些工具函数
+            - log.py # 日志
+            - get_func_def.py # 从源码中获取函数定义交给GPT
+        - prompts/   # Prompt的设计
+            - prompt.py  # Prompt的设计
+        - test/
+            - test_case.md  # 上述prompt_evaluate.md中提到的测试用例
+            - prompt_evaluate.py   # 对Prompt进行评估
+            - test_get_func_def.py # 测试get_func_def.py的实现
         - run.py     # LLMAWJ的主要代码
-        - prompt.py  # Prompt的设计
     - srt/          # 上文提到的SRT的子仓库
     - res/          # 一些输入和输出文件
 ```

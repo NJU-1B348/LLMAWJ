@@ -2,7 +2,7 @@ import prompts.prompt as prompt
 import json
 import argparse
 import config.api as api
-from helper import log
+from utils import log
 
 PROMPT:list[str] = prompt.Prompt.gpt
 
