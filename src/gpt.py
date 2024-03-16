@@ -41,7 +41,7 @@ if __name__ == "__main__":
                         default=False,
                         help='Set to True if you want to disable the \'other\' part in the result, which may save some time to execute and save some cost due to less token. See the documentation for the meaning of \'other\'.')
     parser.add_argument('--dump-hrr', type=bool,
-                        default=False,
+                        default=True,
                         help='Set to True if you want to dump a human readable report with markdown format.')
     parser.add_argument('--hrr-file', type=str,
                         default='report.md',
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         pairs.sort(key=lambda x: x[1]['Chance'])
         
         try:
-            f = open(args.hrr_path, 'w')
+            f = open(args.hrr_file, 'w')
         except FileNotFoundError:
             log(False, f"Report file report.md not found. Cancel report generation.", "warning")
             exit(0)
