@@ -8,3 +8,5 @@ in.json
 out.json
 report.md
 data/
+*.sqlite
+*.db
