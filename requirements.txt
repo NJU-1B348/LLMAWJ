@@ -1,0 +1,3 @@
+clang==17.0.6
+clang-5==5.0.post2
+openai @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_a7runlhihc/croot/openai_1706892404693/work

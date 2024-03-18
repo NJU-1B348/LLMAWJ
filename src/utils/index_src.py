@@ -1,0 +1,66 @@
+"""_summary_ index symbols in source code ans store them in a sqlite3 database.
+"""
+
+from clang.cindex import *
+import sqlite3
+import os
+from . import log
+
+TARGET_DATABASE = "index.sqlite"
+
+Config.set_library_path("/Library/Developer/CommandLineTools/usr/lib")
+
+class SymbolType:
+    Function = "function"
+    Class = "class"
+    Struct = "struct"
+    Enum = "enum"
+    Union = "union"
+
+
+def init_db():
+    if os.path.exists(TARGET_DATABASE):
+        log.warning(f"Database {TARGET_DATABASE} already exists. This will overwrite the existing database. Continue? (Y/[n])")
+        user_choice = input()
+        if user_choice.lower() != "y":
+            log.fatal("Program terminated by user.")
+            exit(0)
+        os.remove(TARGET_DATABASE)
+    conn = sqlite3.connect(TARGET_DATABASE)
+    if conn is None:
+        log.fatal("Cannot connect to database.")
+        exit(1)
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS index_src
+                 (id INTEGER PRIMARY KEY, name TEXT, type TEXT, location TEXT)''')
+    conn.commit()
+    conn.close()
+
+
+def index_src_file(file_path: str):
+    index = Index.create()
+    tu = index.parse(file_path)
+    conn = sqlite3.connect(TARGET_DATABASE)
+    c = conn.cursor()
+    for i in tu.cursor.get_tokens():
+        if i.kind == TokenKind.IDENTIFIER:
+            if i.cursor.kind == CursorKind.FUNCTION_DECL:
+                c.execute("INSERT INTO index_src (name, type, location) VALUES (?, ?, ?)",
+                          (i.spelling, SymbolType.Function, f"{file_path}:{i.cursor.location.line}"))
+            elif i.cursor.kind == CursorKind.CLASS_DECL:
+                c.execute("INSERT INTO index_src (name, type, location) VALUES (?, ?, ?)",
+                          (i.spelling, SymbolType.Class, f"{file_path}:{i.cursor.location.line}"))
+            elif i.cursor.kind == CursorKind.STRUCT_DECL:
+                c.execute("INSERT INTO index_src (name, type, location) VALUES (?, ?, ?)",
+                          (i.spelling, SymbolType.Struct, f"{file_path}:{i.cursor.location.line}"))
+            elif i.cursor.kind == CursorKind.ENUM_DECL:
+                c.execute("INSERT INTO index_src (name, type, location) VALUES (?, ?, ?)",
+                          (i.spelling, SymbolType.Enum, f"{file_path}:{i.cursor.location.line}"))
+            elif i.cursor.kind == CursorKind.UNION_DECL:
+                c.execute("INSERT INTO index_src (name, type, location) VALUES (?, ?, ?)",
+                          (i.spelling, SymbolType.Union, f"{file_path}:{i.cursor.location.line}"))
+            else:
+                continue
+            log.success(f"Found identifier \033[34m{i.spelling}\033[0m of type \033[36m{i.cursor.kind}\033[0m at \033[33m{file_path}:{i.cursor.location.line}\033[0m")
+    conn.commit()
+    conn.close()
