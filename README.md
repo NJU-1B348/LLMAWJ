@@ -8,8 +8,13 @@
 
 ## 环境要求
 
+PYTHON 3.11
 
+## 安装依赖
 
+```shell
+pip install -r requirements.txt
+```
 
 ## 文件结构
 
@@ -19,11 +24,10 @@
         - GPT3.5Prompt.md # 用于GPT3.5的Prompt设计 该Prompt是在还没有迁移至GPT API之前设计的，在将其迁移到GPT API之后，我们进行了略微的修改。
         - prompt_evaluate.md # 在将Prompt迁移至GPT API之前，我们人工对Prompt进行的一次评估，之后我们将在GPT API上进行更多的评估。
     - src/
-        - utils/     # 一些工具函数
+        - utils/     # 一些工具
             - log.py # 日志
             - index_src.py # 从源码建立各种符号的定义位置的索引，并储存在SQLite3数据库中，便于后续查询
             - get_func_def.py # 从源码中获取函数定义交给GPT
-
         - prompts/   # Prompt的设计
             - prompt.py  # Prompt的设计
         - test/
@@ -32,6 +36,7 @@
             - test_index_src.py    # 测试index_src.py的实现
             - test_get_func_def.py # 测试get_func_def.py的实现
         - run.py     # LLMAWJ的主要代码
-    - srt/          # 上文提到的SRT的子仓库
+    - SRT/          # 上文提到的SRT的子仓库
     - res/          # 一些输入和输出文件
+    - IRT/          # 利用Infer_parser的解析报告生成中间结果的工具
 ```
