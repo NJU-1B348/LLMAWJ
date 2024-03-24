@@ -60,14 +60,14 @@ def process_judge(args:argparse.Namespace) -> None:
     log.success(f"Output json has been written to {args.out_file}")
     if args.dump_hrr:
         pairs:list[tuple[dict, dict]] = list(zip(cases, ans))
-        pairs.sort(key=lambda x: x[1]['Chance'])
+        pairs.sort(key=lambda x: x[1]['Chance'], reverse=True)
         try:
             f = open(args.hrr_file, 'w', encoding='utf-8')
         except FileNotFoundError:
             log.warning("Report file report.md not found. Cancel report generation.")
             exit(0)
         f.write("# LLMAWJ Report  \n")
-        f.write("All cases are sorted in the increasing order of the chance of being true warning.  \n")
+        f.write("All cases are sorted in the decreasing order of the chance of being true warning.  \n")
         cnt = 0
         for case, ans in pairs:
             cnt += 1
