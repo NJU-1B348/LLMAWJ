@@ -16,7 +16,9 @@ class SymbolType:
     Struct = "struct"
     Enum = "enum"
     Union = "union"
-
+    Method = "method"
+    Constructor = "constructor"
+    Destructor = "destructor"
 
 def init_db():
     if os.path.exists(TARGET_DATABASE):
@@ -32,7 +34,7 @@ def init_db():
         exit(1)
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS index_src
-                 (id INTEGER PRIMARY KEY, name TEXT, type TEXT, location TEXT)''')
+                 (id INTEGER PRIMARY KEY, name TEXT, type TEXT, file TEXT, line INTEGER)''')
     conn.commit()
     conn.close()
 
@@ -42,23 +44,33 @@ def index_src_file(file_path: str):
     tu = index.parse(file_path)
     conn = sqlite3.connect(TARGET_DATABASE)
     c = conn.cursor()
+    SQL_PATTERN = "INSERT INTO index_src (name, type, file, line) VALUES (?, ?, ?, ?)"
     for i in tu.cursor.get_tokens():
         if i.kind == TokenKind.IDENTIFIER:
             if i.cursor.kind == CursorKind.FUNCTION_DECL:
-                c.execute("INSERT INTO index_src (name, type, location) VALUES (?, ?, ?)",
-                          (i.spelling, SymbolType.Function, f"{file_path}:{i.cursor.location.line}"))
+                c.execute(SQL_PATTERN,
+                          (i.spelling, SymbolType.Function, f"{file_path}", i.cursor.location.line))
             elif i.cursor.kind == CursorKind.CLASS_DECL:
-                c.execute("INSERT INTO index_src (name, type, location) VALUES (?, ?, ?)",
-                          (i.spelling, SymbolType.Class, f"{file_path}:{i.cursor.location.line}"))
+                c.execute(SQL_PATTERN,
+                          (i.spelling, SymbolType.Class, f"{file_path}", i.cursor.location.line))
             elif i.cursor.kind == CursorKind.STRUCT_DECL:
-                c.execute("INSERT INTO index_src (name, type, location) VALUES (?, ?, ?)",
-                          (i.spelling, SymbolType.Struct, f"{file_path}:{i.cursor.location.line}"))
+                c.execute(SQL_PATTERN,
+                          (i.spelling, SymbolType.Struct, f"{file_path}", i.cursor.location.line))
             elif i.cursor.kind == CursorKind.ENUM_DECL:
-                c.execute("INSERT INTO index_src (name, type, location) VALUES (?, ?, ?)",
-                          (i.spelling, SymbolType.Enum, f"{file_path}:{i.cursor.location.line}"))
+                c.execute(SQL_PATTERN,
+                          (i.spelling, SymbolType.Enum, f"{file_path}", i.cursor.location.line))
             elif i.cursor.kind == CursorKind.UNION_DECL:
-                c.execute("INSERT INTO index_src (name, type, location) VALUES (?, ?, ?)",
-                          (i.spelling, SymbolType.Union, f"{file_path}:{i.cursor.location.line}"))
+                c.execute(SQL_PATTERN,
+                          (i.spelling, SymbolType.Union, f"{file_path}", i.cursor.location.line))
+            elif i.cursor.kind == CursorKind.CXX_METHOD:
+                c.execute(SQL_PATTERN,
+                          (i.spelling, SymbolType.Method, f"{file_path}", i.cursor.location.line))
+            elif i.cursor.kind == CursorKind.CONSTRUCTOR:
+                c.execute(SQL_PATTERN,
+                          (i.spelling, SymbolType.Constructor, f"{file_path}", i.cursor.location.line))
+            elif i.cursor.kind == CursorKind.DESTRUCTOR:
+                c.execute(SQL_PATTERN,
+                          (i.spelling, SymbolType.Destructor, f"{file_path}", i.cursor.location.line))
             else:
                 continue
             log.success(f"Found identifier \033[34m{i.spelling}\033[0m of type \033[36m{i.cursor.kind}\033[0m at \033[33m{file_path}:{i.cursor.location.line}\033[0m")

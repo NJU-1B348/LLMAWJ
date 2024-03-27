@@ -17,6 +17,12 @@ typedef union hello_union {
     float b;
 } HU;
 
+HU add (HU a, HU b) {
+    HU c;
+    c.a = a.a + b.a;
+    return c;
+}
+
 int main() {
     printf("Hello, World!\n");
     printf("HELLO_GLOBAL_VAR: %d\n", HELLO_GLOBAL_VAR);
