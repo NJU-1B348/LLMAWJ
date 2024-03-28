@@ -4,6 +4,7 @@
 from clang.cindex import *
 import sqlite3
 import os
+import pathlib
 from . import log
 
 TARGET_DATABASE = "index.sqlite"
@@ -21,6 +22,16 @@ class SymbolType:
     Destructor = "destructor"
 
 def init_db():
+    """
+    Initializes the database by creating the necessary table if it doesn't exist.
+
+    This function checks if the target database file already exists. If it does, it prompts the user for confirmation
+    before overwriting the existing database. If the user confirms, the existing database is deleted and a new one is
+    created. After connecting to the database, it creates the 'index_src' table if it doesn't already exist.
+
+    Returns:
+        None
+    """
     if os.path.exists(TARGET_DATABASE):
         log.warning(f"Database {TARGET_DATABASE} already exists. This will overwrite the existing database. Continue? (Y/[n])")
         user_choice = input()
@@ -40,6 +51,18 @@ def init_db():
 
 
 def index_src_file(file_path: str):
+    """
+    Indexes the source file specified by the given file path.
+
+    Parameters:
+        file_path (str): The path to the source file to be indexed.
+
+    Returns:
+        None
+
+    Raises:
+        None
+    """
     index = Index.create()
     tu = index.parse(file_path)
     conn = sqlite3.connect(TARGET_DATABASE)
@@ -76,3 +99,7 @@ def index_src_file(file_path: str):
             log.success(f"Found identifier \033[34m{i.spelling}\033[0m of type \033[36m{i.cursor.kind}\033[0m at \033[33m{file_path}:{i.cursor.location.line}\033[0m")
     conn.commit()
     conn.close()
+
+
+def index_dir(dir_path:str):
+    pass
