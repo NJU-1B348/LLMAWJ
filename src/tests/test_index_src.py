@@ -8,7 +8,7 @@ from utils import index_src
 TEST_SRC = "c_example/test.c"
 
 EXPECT_RESULT = [
-
+    
 ]
 
 
