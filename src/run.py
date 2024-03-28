@@ -6,7 +6,7 @@ from utils import log
 
 PROMPT:list[str] = prompt.Prompt.gpt
 
-def process_judge(args:argparse.Namespace) -> None:
+def process_judge_openai(args:argparse.Namespace) -> None:
     # read the input file
     f = None
     try:
@@ -79,7 +79,13 @@ def process_judge(args:argparse.Namespace) -> None:
                 f.write(f"**Other Information Suggestted**:  {ans['Other']}  \n")
             f.write(f"**Content**:  \n```json\n{case}\n```  \n")
         log.success(f"Human readable report has been written to { args.hrr_file }")
-        
+
+
+def process_judge_code_llama(args:argparse.Namespace) -> None:
+    # process with code-llama
+    pass
+
+
 if __name__ == "__main__":
     # set the args
     parser = argparse.ArgumentParser()
@@ -107,4 +113,4 @@ if __name__ == "__main__":
     # parse the args
     a = parser.parse_args()
     # process the judge
-    process_judge(a)
+    process_judge_openai(a)
